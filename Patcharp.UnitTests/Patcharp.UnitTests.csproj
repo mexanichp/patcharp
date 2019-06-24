@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="src\" />
+    <ProjectReference Include="..\Patcharp\Patcharp.csproj" />
   </ItemGroup>
 
 </Project>
