@@ -11,8 +11,6 @@ namespace Patcharp.Internal
 {
     internal class ReflectionHelper
     {
-        //private readonly IEnumerable _stack;
-
         public virtual void ApplyTo<T>(ExpandoObject patchOp, ref T objToPatch)
         {
             if (patchOp == null)
@@ -26,47 +24,47 @@ namespace Patcharp.Internal
             }
 
             // Stack of items to patch.
-            var objects = new Stack<Tuple<ExpandoObject, object>>(1);
-            objects.Push(new Tuple<ExpandoObject, object>(patchOp, objToPatch));
+            var objects = new Stack<ModelHolder>(1);
+            objects.Push(new ModelHolder(patchOp, objToPatch));
 
             while (objects.Count > 0)
             {
                 var objFromStack = objects.Pop();
-                var keyValueObject = new Dictionary<string, object>(objFromStack.Item1, StringComparer.OrdinalIgnoreCase);
+                var keyValueObject = new Dictionary<string, object>(objFromStack.PatchOp, StringComparer.OrdinalIgnoreCase);
 
                 // Iterate through the object's properties and set values for them.
                 foreach (var propValue in keyValueObject)
                 {
                     var patchOpValue = propValue.Value;
-                    var refObjProp = objFromStack.Item2.GetType().GetRuntimeProperty(propValue.Key);
+                    var refObjProp = objFromStack.ObjToPatch.GetType().GetRuntimeProperty(propValue.Key);
                     var typeInfo = refObjProp?.PropertyType.GetTypeInfo();
                     
                     switch (patchOpValue)
                     {
                         case ExpandoObject eoStruct when typeInfo != null && typeInfo.IsValueType:
-                            var refObjValue = refObjProp.GetValue(objFromStack.Item2);
+                            var refObjValue = refObjProp.GetValue(objFromStack.ObjToPatch);
                             if (refObjValue == null)
                             {
                                 refObjValue = Activator.CreateInstance(refObjProp.PropertyType);
-                                refObjProp.SetValue(objFromStack.Item2, refObjValue);
+                                refObjProp.SetValue(objFromStack.ObjToPatch, refObjValue);
                                 break;
                             }
 
-                            var tuple = new Tuple<ExpandoObject, object>(eoStruct, refObjValue);
-                            objects.Push(tuple);
-                            refObjProp.SetValue(objFromStack.Item2, tuple.Item2);
+                            var modelHolder = new ModelHolder(eoStruct, refObjValue);
+                            modelHolder.ModelChanged += (sender, args) => refObjProp.SetValue(objFromStack.ObjToPatch, args.ObjToPatch);
+                            objects.Push(modelHolder);
                             break;
 
                         case ExpandoObject expandoObject when refObjProp != null:
-                            refObjValue = refObjProp.GetValue(objFromStack.Item2);
+                            refObjValue = refObjProp.GetValue(objFromStack.ObjToPatch);
                             if (refObjValue == null)
                             {
                                 refObjValue = Activator.CreateInstance(refObjProp.PropertyType);
-                                refObjProp.SetValue(objFromStack.Item2, refObjValue);
+                                refObjProp.SetValue(objFromStack.ObjToPatch, refObjValue);
                                 break;
                             }
 
-                            objects.Push(new Tuple<ExpandoObject, object>(expandoObject, refObjValue));
+                            objects.Push(new ModelHolder(expandoObject, refObjValue));
                             break;
 
                         case int _ when typeInfo != null && typeInfo.IsEnum:
@@ -80,7 +78,7 @@ namespace Patcharp.Internal
                         case char _ when typeInfo != null && typeInfo.IsEnum:
                             try
                             {
-                                refObjProp.SetValue(objFromStack.Item2, Enum.ToObject(refObjProp.PropertyType, patchOpValue));
+                                refObjProp.SetValue(objFromStack.ObjToPatch, Enum.ToObject(refObjProp.PropertyType, patchOpValue));
                             }
                             catch
                             {
@@ -92,7 +90,7 @@ namespace Patcharp.Internal
                         case string enumStr when typeInfo != null && typeInfo.IsEnum:
                             try
                             {
-                                refObjProp.SetValue(objFromStack.Item2, Enum.Parse(refObjProp.PropertyType, enumStr));
+                                refObjProp.SetValue(objFromStack.ObjToPatch, Enum.Parse(refObjProp.PropertyType, enumStr));
                             }
                             catch
                             {
@@ -104,7 +102,7 @@ namespace Patcharp.Internal
                         case var any when refObjProp != null && any != null:
                             if (refObjProp.PropertyType == patchOpValue.GetType())
                             {
-                                refObjProp.SetValue(objFromStack.Item2, patchOpValue);
+                                refObjProp.SetValue(objFromStack.ObjToPatch, patchOpValue);
                             }
 
                             if (!TypeDescriptor.GetConverter(refObjProp.PropertyType).CanConvertFrom(patchOpValue.GetType()))
@@ -112,21 +110,17 @@ namespace Patcharp.Internal
                                 break;
                             }
 
-                            refObjProp.SetValue(objFromStack.Item2, Convert.ChangeType(TypeDescriptor.GetConverter(refObjProp.PropertyType).ConvertFrom(propValue.Value), refObjProp.PropertyType));
+                            refObjProp.SetValue(objFromStack.ObjToPatch, Convert.ChangeType(TypeDescriptor.GetConverter(refObjProp.PropertyType).ConvertFrom(propValue.Value), refObjProp.PropertyType));
                             break;
 
                         case null when refObjProp != null:
-                            refObjProp.SetValue(objFromStack.Item2, patchOpValue);
+                            refObjProp.SetValue(objFromStack.ObjToPatch, patchOpValue);
                             break;
                     }
                 }
+
+                objFromStack.OnHolderIsUpdated();
             }
         }
-
-        //private void StackPush<T>(ExpandoObject patchOp, ref T obj)
-        //{
-        //    Stack<Tuple<ExpandoObject, T>> stack = (_stack as Stack<Tuple<ExpandoObject, T>>) ?? new Stack<Tuple<ExpandoObject, T>>(1);
-        //    stack.Push(new Tuple<ExpandoObject, T>(patchOp, obj));
-        //}
     }
 }

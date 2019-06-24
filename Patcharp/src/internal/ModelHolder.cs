@@ -7,19 +7,18 @@ namespace Patcharp.Internal
     {
         public event EventHandler<ModelHolderArgs> ModelChanged;
 
-        private readonly ExpandoObject _patchOp;
-        private object _objToPatch;
+        public ExpandoObject PatchOp { get; }
+        public object ObjToPatch { get; }
 
         public ModelHolder(ExpandoObject patchOp, object objToPatch)
         {
-            _patchOp = patchOp;
-            _objToPatch = objToPatch;
+            PatchOp = patchOp;
+            ObjToPatch = objToPatch;
         }
 
-        public void UpdateObjToPatch(object updatedObj)
+        public void OnHolderIsUpdated()
         {
-            _objToPatch = updatedObj;
-            ModelChanged?.Invoke(this, new ModelHolderArgs(_patchOp, _objToPatch));
+            ModelChanged?.Invoke(this, new ModelHolderArgs(PatchOp, ObjToPatch));
         }
     }
 }
