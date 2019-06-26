@@ -10,6 +10,8 @@ namespace Patcharp.UnitTests.Helpers
 
         public int ValueInt { get; set; }
 
+        public long ValueLong { get; set; }
+
         public bool ValueBool { get; set; }
 
         public Entity ValueThis { get; set; }
@@ -19,12 +21,12 @@ namespace Patcharp.UnitTests.Helpers
 
     public struct EntityStruct
     {
-        public Enum ValueEnum { get; set; }
+        public EntityEnum ValueEnum { get; set; }
 
         public float ValueFloat { get; set; }
     }
 
-    public enum Enum
+    public enum EntityEnum
     {
         First,
         Second,

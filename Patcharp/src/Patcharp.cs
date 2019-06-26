@@ -22,7 +22,16 @@ namespace Patcharp
 
         public T ApplyPatchOperation<T>(T item, string jsonBody)
         {
-            dynamic request = JsonConvert.DeserializeObject<ExpandoObject>(jsonBody);
+            dynamic request;
+
+            try
+            {
+                request = JsonConvert.DeserializeObject<ExpandoObject>(jsonBody);
+            }
+            catch (JsonReaderException e)
+            {
+                throw new ArgumentException("JSON argument has invalid format.", nameof(jsonBody), e);
+            }
 
             _reflectionHelper.ApplyTo(request, ref item);
 

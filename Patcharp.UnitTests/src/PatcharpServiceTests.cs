@@ -4,7 +4,6 @@ using Newtonsoft.Json;
 using NUnit.Framework;
 using Patcharp.Internal;
 using Patcharp.UnitTests.Helpers;
-using Enum = Patcharp.UnitTests.Helpers.Enum;
 
 namespace Patcharp.UnitTests
 {
@@ -19,6 +18,18 @@ namespace Patcharp.UnitTests
         {
             _patcharpService = new Patcharp();
             _reflectionHelper = new ReflectionHelper();
+        }
+
+        [Test]
+        public void ApplyTo_InvokedWithInvalidJson_ShouldThrowArgumentException()
+        {
+            // Arrange
+            var invalidJson = "{\"test\":{not valid format}}";
+
+            // Act
+
+            // Assert
+            Assert.Throws<ArgumentException>(() => _patcharpService.ApplyPatchOperation(new Entity(), invalidJson));
         }
 
         [Test]
@@ -123,7 +134,7 @@ namespace Patcharp.UnitTests
             {
                 StructThis = new EntityStruct
                 {
-                    ValueEnum = Enum.Third
+                    ValueEnum = EntityEnum.Third
                 }
             };
 
@@ -139,7 +150,7 @@ namespace Patcharp.UnitTests
                 },
                 StructThis = new EntityStruct
                 {
-                    ValueEnum = Enum.Second,
+                    ValueEnum = EntityEnum.Second,
                     ValueFloat = 24.555f
                 }
             };
@@ -149,7 +160,7 @@ namespace Patcharp.UnitTests
 
             // Assert
             Assert.AreEqual(24.555f, originObject.StructThis.ValueFloat);
-            Assert.AreEqual(Enum.Third, originObject.StructThis.ValueEnum);
+            Assert.AreEqual(EntityEnum.Third, originObject.StructThis.ValueEnum);
         }
     }
 }

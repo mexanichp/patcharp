@@ -43,13 +43,6 @@ namespace Patcharp.Internal
                     {
                         case ExpandoObject eoStruct when typeInfo != null && typeInfo.IsValueType:
                             var refObjValue = refObjProp.GetValue(objFromStack.ObjToPatch);
-                            if (refObjValue == null)
-                            {
-                                refObjValue = Activator.CreateInstance(refObjProp.PropertyType);
-                                refObjProp.SetValue(objFromStack.ObjToPatch, refObjValue);
-                                break;
-                            }
-
                             var modelHolder = new ModelHolder(eoStruct, refObjValue);
                             modelHolder.ModelChanged += (sender, args) => refObjProp.SetValue(objFromStack.ObjToPatch, args.ObjToPatch);
                             objects.Push(modelHolder);
