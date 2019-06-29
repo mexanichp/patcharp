@@ -44,25 +44,10 @@ namespace Patcharp.UnitTests
         }
 
         [Theory]
-        public void GivenDoubleEdgeValues_WhenTryingToPatchInt_ThenThrowsArgumentException(T value)
+        public void GivenFloatOrDoubleEdgeValues_WhenTryingToPatchInt_ThenThrowsArgumentException(T value)
         {
             // Arrange
-            Assume.That(value is double);
-            var json = $"{{\"ValueInt\":\"{value}\"}}";
-            var entity = new Entity();
-
-            // Act
-            var action = new TestDelegate(() => _patcharp.ApplyPatchOperation(entity, json));
-
-            // Assert
-            Assert.That(action, Throws.ArgumentException);
-        }
-
-        [Theory]
-        public void GivenFloatEdgeValues_WhenTryingToPatchInt_ThenThrowsArgumentException(T value)
-        {
-            // Arrange
-            Assume.That(value is float);
+            Assume.That(value is double || value is float);
             var json = $"{{\"ValueInt\":\"{value}\"}}";
             var entity = new Entity();
 
