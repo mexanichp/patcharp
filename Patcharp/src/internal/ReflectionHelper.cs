@@ -92,6 +92,15 @@ namespace Patcharp.Internal
 
                             break;
 
+                        case IEnumerable enumerable when typeInfo != null && typeInfo.IsAssignableFrom(enumerable.GetType().GetTypeInfo()):
+                            refObjProp.SetValue(objFromStack.ObjToPatch, enumerable);
+                            break;
+
+                        case List<object> list when typeInfo != null && typeInfo.IsArray:
+
+                            // This will be a future implementation to handle array specific changes.
+                            throw new NotImplementedException();
+
                         case var any when refObjProp != null && any != null:
                             if (refObjProp.PropertyType == patchOpValue.GetType())
                             {

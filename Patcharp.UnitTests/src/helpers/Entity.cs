@@ -26,6 +26,11 @@ namespace Patcharp.UnitTests.Helpers
         public float ValueFloat { get; set; }
     }
 
+    public class EntityWithArray
+    {
+        public Entity[] EntityArray { get; set; }
+    }
+
     public enum EntityEnum
     {
         First,

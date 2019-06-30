@@ -162,5 +162,28 @@ namespace Patcharp.UnitTests
             Assert.AreEqual(24.555f, originObject.StructThis.ValueFloat);
             Assert.AreEqual(EntityEnum.Third, originObject.StructThis.ValueEnum);
         }
+
+        [Test]
+        public void ApplyPatchOperation_SetChangedArrayToObjectProperty_WholePropertyShouldBeReplaced()
+        {
+            // Arrange
+            var id = Guid.NewGuid();
+            var incomingRequest = new EntityWithArray
+            {
+                EntityArray = new []{ new Entity {Id = id}}
+            };
+
+            var originObject = new EntityWithArray
+            {
+                EntityArray = new[] { new Entity { Id = Guid.NewGuid() }, new Entity {Id = Guid.NewGuid()} }
+            };
+
+            // Act
+            _patcharpService.ApplyPatchOperation(originObject, JsonConvert.SerializeObject(incomingRequest));
+
+            // Assert
+            Assert.That(originObject.EntityArray, Has.Length.EqualTo(1));
+            Assert.That(originObject.EntityArray, Has.All.Property("Id").EqualTo(id));
+        }
     }
 }

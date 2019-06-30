@@ -1,7 +1,4 @@
-﻿using System;
-using System.Dynamic;
-using System.Linq.Expressions;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using Patcharp.UnitTests.Helpers;
 
 namespace Patcharp.UnitTests
