@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.329
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Patcharp", "Patcharp\Patcharp.csproj", "{891AF67A-1E30-40B3-9DDE-069E9A06FD16}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Patcharp", "Patcharp\Patcharp.csproj", "{891AF67A-1E30-40B3-9DDE-069E9A06FD16}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Patcharp.UnitTests", "Patcharp.UnitTests\Patcharp.UnitTests.csproj", "{6C61819E-19D9-46E3-A886-1311063F6F28}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Patcharp.UnitTests", "Patcharp.UnitTests\Patcharp.UnitTests.csproj", "{6C61819E-19D9-46E3-A886-1311063F6F28}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Patcharp.Performance", "Patcharp.Performance\Patcharp.Performance.csproj", "{168ADDE2-B0C0-4CDA-8B02-F836A0D23EFA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{6C61819E-19D9-46E3-A886-1311063F6F28}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6C61819E-19D9-46E3-A886-1311063F6F28}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6C61819E-19D9-46E3-A886-1311063F6F28}.Release|Any CPU.Build.0 = Release|Any CPU
+		{168ADDE2-B0C0-4CDA-8B02-F836A0D23EFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{168ADDE2-B0C0-4CDA-8B02-F836A0D23EFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{168ADDE2-B0C0-4CDA-8B02-F836A0D23EFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{168ADDE2-B0C0-4CDA-8B02-F836A0D23EFA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
